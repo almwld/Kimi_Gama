@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flex_yemen/models/chat_model.dart';
+import 'package:flex_yemen/models/message_model.dart';
 import 'package:flex_yemen/services/supabase_service.dart';
 
 class ChatProvider extends ChangeNotifier {

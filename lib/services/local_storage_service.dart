@@ -28,7 +28,7 @@ class LocalStorageService {
     return _userBoxInstance.get('current_user');
   }
 
-  static Future<void> clearUser() async {
+  static Future<void> deleteUser() async {
     await _userBoxInstance.delete('current_user');
   }
 
@@ -49,67 +49,23 @@ class LocalStorageService {
     return _settingsBoxInstance.get('language') ?? 'ar';
   }
 
+  static String getTheme() {
+    return _settingsBoxInstance.get('theme') ?? 'system';
+  }
+
+  static Future<void> setTheme(String theme) async {
+    await _settingsBoxInstance.put('theme', theme);
+  }
+
+  static bool getNotificationsEnabled() {
+    return _settingsBoxInstance.get('notifications') ?? true;
+  }
+
+  static Future<void> setNotificationsEnabled(bool enabled) async {
+    await _settingsBoxInstance.put('notifications', enabled);
+  }
+
   // ===== المفضلة =====
-  static Future<void> addFavorite(String productId) async {
-    List<String> favs = getFavorites();
-    if (!favs.contains(productId)) {
-      favs.add(productId);
-      await _favoritesBoxInstance.put('favorites', favs);
-    }
-  }
-
-  static Future<void> removeFavorite(String productId) async {
-    List<String> favs = getFavorites();
-    favs.remove(productId);
-    await _favoritesBoxInstance.put('favorites', favs);
-  }
-
-  static List<String> getFavorites() {
-    return _favoritesBoxInstance.get('favorites', defaultValue: <String>[]);
-  }
-
-  static bool isFavorite(String productId) {
-    return getFavorites().contains(productId);
-  }
-
-  // ===== سلة التسوق =====
-  static Future<void> saveCartItems(List<Map<String, dynamic>> items) async {
-    await _cartBoxInstance.put('cart', items);
-  }
-
-  static List<Map<String, dynamic>> getCartItems() {
-    return _cartBoxInstance.get('cart', defaultValue: <Map<String, dynamic>>[]);
-  }
-
-  static Future<void> addToCart(Map<String, dynamic> item) async {
-    List<Map<String, dynamic>> cart = getCartItems();
-    cart.add(item);
-    await saveCartItems(cart);
-  }
-
-  static Future<void> removeFromCart(String productId) async {
-    List<Map<String, dynamic>> cart = getCartItems();
-    cart.removeWhere((item) => item['productId'] == productId);
-    await saveCartItems(cart);
-  }
-
-  static Future<void> clearCart() async {
-    await _cartBoxInstance.delete('cart');
-  }
-}
-
-  static Map<String, dynamic>? getUser() {
-    return _userBoxInstance.get('current_user');
-  }
-
-  static Future<void> saveUser(Map<String, dynamic> user) async {
-    await _userBoxInstance.put('current_user', user);
-  }
-
-  static Future<void> deleteUser() async {
-    await _userBoxInstance.delete('current_user');
-  }
-
   static List<String> getFavorites() {
     return _favoritesBoxInstance.get('favorites', defaultValue: <String>[]);
   }
@@ -128,6 +84,11 @@ class LocalStorageService {
     await _favoritesBoxInstance.put('favorites', favs);
   }
 
+  static bool isFavorite(String productId) {
+    return getFavorites().contains(productId);
+  }
+
+  // ===== سلة التسوق =====
   static List<Map<String, dynamic>> getCart() {
     return _cartBoxInstance.get('cart', defaultValue: <Map<String, dynamic>>[]);
   }
@@ -148,18 +109,12 @@ class LocalStorageService {
     await _cartBoxInstance.delete('cart');
   }
 
-  static String getTheme() {
-    return _settingsBoxInstance.get('theme', defaultValue: 'system');
+  static Future<void> updateCartItem(String productId, int quantity) async {
+    List<Map<String, dynamic>> cart = getCart();
+    final index = cart.indexWhere((item) => item['productId'] == productId);
+    if (index != -1) {
+      cart[index]['quantity'] = quantity;
+      await _cartBoxInstance.put('cart', cart);
+    }
   }
-
-  static Future<void> setTheme(String theme) async {
-    await _settingsBoxInstance.put('theme', theme);
-  }
-
-  static bool getNotificationsEnabled() {
-    return _settingsBoxInstance.get('notifications', defaultValue: true);
-  }
-
-  static Future<void> setNotificationsEnabled(bool enabled) async {
-    await _settingsBoxInstance.put('notifications', enabled);
-  }
+}

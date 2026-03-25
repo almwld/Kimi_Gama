@@ -1,64 +1,61 @@
+import 'package:flex_yemen/models/message_model.dart';
+
 class ChatModel {
   final String id;
-  final String userId;
-  final String otherUserId;
-  final String? lastMessage;
-  final DateTime? lastMessageTime;
+  final List<String> participants;
+  final MessageModel? lastMessage;
   final int unreadCount;
-  final Map<String, dynamic>? otherUser;
+  final DateTime createdAt;
+  final DateTime updatedAt;
 
   ChatModel({
     required this.id,
-    required this.userId,
-    required this.otherUserId,
+    required this.participants,
     this.lastMessage,
-    this.lastMessageTime,
     this.unreadCount = 0,
-    this.otherUser,
+    required this.createdAt,
+    required this.updatedAt,
   });
 
   factory ChatModel.fromJson(Map<String, dynamic> json) {
     return ChatModel(
-      id: json['id'],
-      userId: json['user_id'],
-      otherUserId: json['other_user_id'],
-      lastMessage: json['last_message'],
-      lastMessageTime: json['last_message_time'] != null
-          ? DateTime.parse(json['last_message_time'])
+      id: json['id'] as String,
+      participants: List<String>.from(json['participants']),
+      lastMessage: json['lastMessage'] != null
+          ? MessageModel.fromJson(json['lastMessage'])
           : null,
-      unreadCount: json['unread_count'] ?? 0,
-      otherUser: json['other_user'],
+      unreadCount: json['unreadCount'] as int? ?? 0,
+      createdAt: DateTime.parse(json['createdAt'] as String),
+      updatedAt: DateTime.parse(json['updatedAt'] as String),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'user_id': userId,
-      'other_user_id': otherUserId,
-      'last_message': lastMessage,
-      'last_message_time': lastMessageTime?.toIso8601String(),
-      'unread_count': unreadCount,
+      'participants': participants,
+      'lastMessage': lastMessage?.toJson(),
+      'unreadCount': unreadCount,
+      'createdAt': createdAt.toIso8601String(),
+      'updatedAt': updatedAt.toIso8601String(),
     };
   }
 
   ChatModel copyWith({
     String? id,
-    String? userId,
-    String? otherUserId,
-    String? lastMessage,
-    DateTime? lastMessageTime,
+    List<String>? participants,
+    MessageModel? lastMessage,
     int? unreadCount,
-    Map<String, dynamic>? otherUser,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return ChatModel(
       id: id ?? this.id,
-      userId: userId ?? this.userId,
-      otherUserId: otherUserId ?? this.otherUserId,
+      participants: participants ?? this.participants,
       lastMessage: lastMessage ?? this.lastMessage,
-      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
       unreadCount: unreadCount ?? this.unreadCount,
-      otherUser: otherUser ?? this.otherUser,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
     );
   }
 }

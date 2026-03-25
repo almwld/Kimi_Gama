@@ -123,7 +123,7 @@ class AppConstants {
   static final List<Map<String, dynamic>> currencies = [
     {'code': 'YER', 'name': 'ريال يمني', 'symbol': 'ر.ي', 'flag': '🇾🇪'},
     {'code': 'SAR', 'name': 'ريال سعودي', 'symbol': 'ر.س', 'flag': '🇸🇦'},
-    {'code': 'USD', 'name': 'دولار أمريكي', 'symbol': '$', 'flag': '🇺🇸'},
+    {'code': 'USD', 'name': 'دولار أمريكي', 'symbol': '\$', 'flag': '🇺🇸'},
   ];
   
   // أسعار الصرف (تقريبية)

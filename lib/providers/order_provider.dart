@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flex_yemen/models/order_model.dart';
+import 'package:flex_yemen/models/order_item_model.dart';
 import 'package:flex_yemen/services/supabase_service.dart';
 import 'package:flex_yemen/services/local_storage_service.dart';
 
