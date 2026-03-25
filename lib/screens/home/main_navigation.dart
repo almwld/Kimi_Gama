@@ -164,3 +164,4 @@ class _MainNavigationState extends State<MainNavigation> {
     );
   }
 }
+// تأكد من أن NotificationProvider موجود في الـ providers
