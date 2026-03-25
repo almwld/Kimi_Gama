@@ -18,12 +18,33 @@ workflows:
           include: true
           source: true
     scripts:
+      - name: Clean previous builds
+        script: |
+          flutter clean
+          rm -rf android/app/src/main/java
+          rm -rf android/app/src/main/kotlin
+      
       - name: Get Flutter packages
         script: |
-          flutter packages pub get
+          flutter pub get
+      
+      - name: Setup Android project
+        script: |
+          # إعادة إنشاء مجلد android من الصفر لتجنب مشاكل Gradle
+          flutter create --platforms=android --project-name=flex_yemen_temp --org com.flexyemen ./temp_project
+          rm -rf android
+          cp -r temp_project/android .
+          rm -rf temp_project
+          
+          # تحديث build.gradle لإصدارات متوافقة
+          sed -i '' 's/minSdkVersion .*/minSdkVersion 21/' android/app/build.gradle
+          sed -i '' 's/targetSdkVersion .*/targetSdkVersion 33/' android/app/build.gradle
+          sed -i '' 's/compileSdkVersion .*/compileSdkVersion 33/' android/app/build.gradle
+      
       - name: Build Android APK
         script: |
           flutter build apk --release
+      
       - name: Build Android AAB
         script: |
           flutter build appbundle --release
