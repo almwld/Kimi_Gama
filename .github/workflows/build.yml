@@ -39,8 +39,11 @@ jobs:
         
         mkdir -p assets/images assets/icons assets/fonts
         
-        # خفض path_provider إلى ^2.0.0
+        # خفض path_provider
         sed -i 's/path_provider:.*/path_provider: ^2.0.0/' pubspec.yaml
+        
+        # رفع minSdkVersion إلى 21
+        sed -i 's/minSdkVersion [0-9]*/minSdkVersion 21/' android/app/build.gradle
         
         # إضافة namespace
         sed -i '/android {/a \    namespace "com.kimigama.app"' android/app/build.gradle
