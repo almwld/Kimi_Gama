@@ -1,0 +1,32 @@
+name: Generate Android
+
+on:
+  workflow_dispatch:
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.22.0'
+    
+    - name: Create Android folder
+      run: |
+        flutter create --org com.kimigama --project-name kimigama --platforms android .
+        sed -i '/<application>/a \        <meta-data android:name="flutterEmbedding" android:value="2" />' android/app/src/main/AndroidManifest.xml
+        sed -i 's/minSdkVersion [0-9]*/minSdkVersion 21/' android/app/build.gradle
+        sed -i '/android {/a \    namespace "com.kimigama.app"' android/app/build.gradle
+        sed -i '/android {/a \    ndkVersion "27.0.12077973"' android/app/build.gradle
+        sed -i '/compileOptions {/a \                coreLibraryDesugaringEnabled true' android/app/build.gradle
+        sed -i '/dependencies {/a \    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:2.0.4"' android/app/build.gradle
+        sed -i '/dependencies {/a \    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"' android/app/build.gradle
+    
+    - name: Upload Android
+      uses: actions/upload-artifact@v4
+      with:
+        name: android-folder
+        path: android/
