@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
-import '../../providers/theme_provider.dart';
 import '../../core/utils/helpers.dart';
 import '../../theme/app_theme.dart';
 import 'register_screen.dart';
@@ -43,9 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   @override
-Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
+  Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -113,7 +110,7 @@ Widget build(BuildContext context) {
                   await authProvider.signInAsGuest();
                   if (mounted) {
                     Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (_) => const MainNavigation(isGuest: true)),
+                      MaterialPageRoute(builder: (_) => const MainNavigation()),
                     );
                   }
                 },
