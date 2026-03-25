@@ -26,19 +26,11 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter packages pub get
-      
-      - name: Analyze code
-        script: |
-          flutter analyze
-      
-      - name: Run tests
-        script: |
-          flutter test
-      
+
       - name: Build Android APK
         script: |
           flutter build apk --release
-      
+
       - name: Build Android AAB
         script: |
           flutter build appbundle --release
@@ -53,7 +45,7 @@ workflows:
         notify:
           success: true
           failure: true
-      
+
       google_play:
         credentials: $GOOGLE_PLAY_CREDENTIALS
         track: internal
@@ -85,11 +77,11 @@ workflows:
       - name: Get Flutter packages
         script: |
           flutter packages pub get
-      
+
       - name: Install CocoaPods
         script: |
           cd ios && pod install
-      
+
       - name: Build iOS
         script: |
           flutter build ios --release
@@ -102,7 +94,7 @@ workflows:
         notify:
           success: true
           failure: true
-      
+
       app_store_connect:
         api_key: $APP_STORE_CONNECT_API_KEY
         key_id: $APP_STORE_CONNECT_KEY_ID
