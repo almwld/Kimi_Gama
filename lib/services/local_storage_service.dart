@@ -257,11 +257,5 @@ class LocalStorageService {
   }
 }
 
-  static double getCartTotal() {
-    final cart = getCartItems();
-    double total = 0;
-    for (var item in cart) {
-      total += (item['price'] as num?)?.toDouble() ?? 0;
-    }
     return total;
   }
