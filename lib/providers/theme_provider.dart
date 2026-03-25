@@ -18,7 +18,7 @@ class ThemeProvider extends ChangeNotifier {
 
   // تحميل الثيم المحفوظ
   Future<void> _loadTheme() async {
-    final savedTheme = _localStorage.getTheme();
+    final savedTheme = LocalStorageService.getTheme();
     
     switch (savedTheme) {
       case 'light':
@@ -37,21 +37,21 @@ class ThemeProvider extends ChangeNotifier {
   // تعيين الثيم الفاتح
   Future<void> setLightMode() async {
     _themeMode = ThemeMode.light;
-    await _localStorage.setTheme('light');
+    await LocalStorageService.setTheme('light');
     notifyListeners();
   }
 
   // تعيين الثيم الداكن
   Future<void> setDarkMode() async {
     _themeMode = ThemeMode.dark;
-    await _localStorage.setTheme('dark');
+    await LocalStorageService.setTheme('dark');
     notifyListeners();
   }
 
   // تعيين الثيم حسب النظام
   Future<void> setSystemMode() async {
     _themeMode = ThemeMode.system;
-    await _localStorage.setTheme('system');
+    await LocalStorageService.setTheme('system');
     notifyListeners();
   }
 

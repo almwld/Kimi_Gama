@@ -27,7 +27,7 @@ class NotificationProvider extends ChangeNotifier {
 
   // تحميل الإعدادات
   Future<void> _loadSettings() async {
-    _notificationsEnabled = _localStorage.getNotificationsEnabled();
+    _notificationsEnabled = LocalStorageService.getNotificationsEnabled();
     notifyListeners();
   }
 
@@ -92,7 +92,7 @@ class NotificationProvider extends ChangeNotifier {
   // حذف إشعار
   Future<void> deleteNotification(String notificationId) async {
     try {
-      await _localStorage.deleteNotification(notificationId);
+      await LocalStorageService.deleteNotification(notificationId);
       _notifications.removeWhere((n) => n.id == notificationId);
       notifyListeners();
     } catch (e) {
@@ -107,7 +107,7 @@ class NotificationProvider extends ChangeNotifier {
     _clearError();
 
     try {
-      await _localStorage.clearNotifications();
+      await LocalStorageService.clearNotifications();
       _notifications = [];
       notifyListeners();
     } catch (e) {
@@ -121,14 +121,14 @@ class NotificationProvider extends ChangeNotifier {
   // تفعيل/تعطيل الإشعارات
   Future<void> setNotificationsEnabled(bool enabled) async {
     _notificationsEnabled = enabled;
-    await _localStorage.setNotificationsEnabled(enabled);
+    await LocalStorageService.setNotificationsEnabled(enabled);
     notifyListeners();
   }
 
   // إضافة إشعار محلي
   Future<void> addLocalNotification(NotificationModel notification) async {
     try {
-      await _localStorage.saveNotification(notification);
+      await LocalStorageService.saveNotification(notification);
       _notifications.insert(0, notification);
       notifyListeners();
     } catch (e) {

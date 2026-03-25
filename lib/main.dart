@@ -17,7 +17,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   // تهيئة التخزين المحلي
-  await LocalStorageService().init();
+  await LocalStorageService.init();
   
   // تهيئة الإشعارات
   await NotificationService().init();

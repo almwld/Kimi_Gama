@@ -94,7 +94,6 @@ class SupabaseService {
   Future<UserModel?> getCurrentUser() async {
     try {
       await Future.delayed(Duration(milliseconds: 500));
-      return UserModel.dummyUser;
     } catch (e) {
       throw Exception('فشل جلب بيانات المستخدم: $e');
     }
@@ -153,7 +152,6 @@ class SupabaseService {
     try {
       await Future.delayed(Duration(seconds: 1));
       
-      var products = ProductModel.dummyProducts;
       
       // تصفية حسب الفئة
       if (categoryId != null) {
@@ -214,9 +212,7 @@ class SupabaseService {
   Future<ProductModel> getProduct(String productId) async {
     try {
       await Future.delayed(Duration(milliseconds: 500));
-      return ProductModel.dummyProducts.firstWhere(
         (p) => p.id == productId,
-        orElse: () => ProductModel.dummyProducts[0],
       );
     } catch (e) {
       throw Exception('فشل جلب المنتج: $e');
@@ -266,7 +262,6 @@ class SupabaseService {
   Future<List<ProductModel>> getFavorites() async {
     try {
       await Future.delayed(Duration(seconds: 1));
-      return ProductModel.dummyProducts.where((p) => p.isFavorite).toList();
     } catch (e) {
       throw Exception('فشل جلب المفضلة: $e');
     }
@@ -293,7 +288,6 @@ class SupabaseService {
     try {
       await Future.delayed(Duration(seconds: 1));
       
-      var orders = OrderModel.dummyOrders;
       
       if (status != null) {
         orders = orders.where((o) => o.status == status).toList();
@@ -309,9 +303,7 @@ class SupabaseService {
   Future<OrderModel> getOrder(String orderId) async {
     try {
       await Future.delayed(Duration(milliseconds: 500));
-      return OrderModel.dummyOrders.firstWhere(
         (o) => o.id == orderId,
-        orElse: () => OrderModel.dummyOrders[0],
       );
     } catch (e) {
       throw Exception('فشل جلب الطلب: $e');
@@ -342,7 +334,6 @@ class SupabaseService {
   Future<WalletModel> getWallet() async {
     try {
       await Future.delayed(Duration(milliseconds: 500));
-      return WalletModel.dummyWallet;
     } catch (e) {
       throw Exception('فشل جلب المحفظة: $e');
     }
@@ -357,7 +348,6 @@ class SupabaseService {
     try {
       await Future.delayed(Duration(seconds: 1));
       
-      var transactions = TransactionModel.dummyTransactions;
       
       if (type != null) {
         transactions = transactions.where((t) => t.type == type).toList();
@@ -451,7 +441,6 @@ class SupabaseService {
   Future<List<ChatModel>> getChats() async {
     try {
       await Future.delayed(Duration(seconds: 1));
-      return ChatModel.dummyChats;
     } catch (e) {
       throw Exception('فشل جلب المحادثات: $e');
     }
@@ -480,7 +469,6 @@ class SupabaseService {
   Future<List<MessageModel>> getMessages(String chatId, {int page = 1}) async {
     try {
       await Future.delayed(Duration(seconds: 1));
-      return MessageModel.dummyMessages.where((m) => m.chatId == chatId).toList();
     } catch (e) {
       throw Exception('فشل جلب الرسائل: $e');
     }
@@ -525,7 +513,6 @@ class SupabaseService {
     try {
       await Future.delayed(Duration(seconds: 1));
       
-      var notifications = NotificationModel.dummyNotifications;
       
       if (unreadOnly) {
         notifications = notifications.where((n) => !n.isRead).toList();
@@ -561,7 +548,6 @@ class SupabaseService {
   Future<List<RatingModel>> getProductRatings(String productId) async {
     try {
       await Future.delayed(Duration(seconds: 1));
-      return RatingModel.dummyRatings.where((r) => r.productId == productId).toList();
     } catch (e) {
       throw Exception('فشل جلب التقييمات: $e');
     }

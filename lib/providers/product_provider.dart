@@ -34,7 +34,7 @@ class ProductProvider extends ChangeNotifier {
 
   // تحميل المفضلة من التخزين المحلي
   Future<void> _loadFavorites() async {
-    _favorites = _localStorage.getFavorites();
+    _favorites = LocalStorageService.getFavorites();
     notifyListeners();
   }
 
@@ -206,10 +206,10 @@ class ProductProvider extends ChangeNotifier {
 
       if (isFavorite) {
         final product = _products.firstWhere((p) => p.id == productId);
-        await _localStorage.addToFavorites(product);
+        await LocalStorageService.addToFavorites(product);
         _favorites.add(product);
       } else {
-        await _localStorage.removeFromFavorites(productId);
+        await LocalStorageService.removeFromFavorites(productId);
         _favorites.removeWhere((p) => p.id == productId);
       }
 

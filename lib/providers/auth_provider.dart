@@ -28,13 +28,13 @@ class AuthProvider extends ChangeNotifier {
   Future<void> _loadUserFromStorage() async {
     _setLoading(true);
     try {
-      _user = _localStorage.getUser();
+      _user = LocalStorageService.getUser();
       if (_user != null) {
         // تحديث بيانات المستخدم من الخادم
         final updatedUser = await _supabaseService.getCurrentUser();
         if (updatedUser != null) {
           _user = updatedUser;
-          await _localStorage.saveUser(updatedUser);
+          await LocalStorageService.saveUser(updatedUser);
         }
       }
     } catch (e) {
@@ -56,7 +56,7 @@ class AuthProvider extends ChangeNotifier {
         final user = await _supabaseService.getCurrentUser();
         if (user != null) {
           _user = user;
-          await _localStorage.saveUser(user);
+          await LocalStorageService.saveUser(user);
           notifyListeners();
           return true;
         }
@@ -65,7 +65,7 @@ class AuthProvider extends ChangeNotifier {
       // محاكاة النجاح مع البيانات الوهمية
       await Future.delayed(Duration(seconds: 1));
       _user = UserModel.dummyUser;
-      await _localStorage.saveUser(_user!);
+      await LocalStorageService.saveUser(_user!);
       notifyListeners();
       return true;
     } catch (e) {
@@ -88,7 +88,7 @@ class AuthProvider extends ChangeNotifier {
       // محاكاة النجاح
       await Future.delayed(Duration(seconds: 1));
       _user = UserModel.dummyUser;
-      await _localStorage.saveUser(_user!);
+      await LocalStorageService.saveUser(_user!);
       notifyListeners();
       return true;
     } catch (e) {
@@ -131,7 +131,7 @@ class AuthProvider extends ChangeNotifier {
         city: city,
         userType: userType,
       );
-      await _localStorage.saveUser(_user!);
+      await LocalStorageService.saveUser(_user!);
       notifyListeners();
       return true;
     } catch (e) {
@@ -149,7 +149,7 @@ class AuthProvider extends ChangeNotifier {
     
     try {
       await _supabaseService.signOut();
-      await _localStorage.deleteUser();
+      await LocalStorageService.deleteUser();
       _user = null;
       notifyListeners();
     } catch (e) {
@@ -185,7 +185,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       final user = await _supabaseService.updateUser(updatedUser);
       _user = user;
-      await _localStorage.saveUser(user);
+      await LocalStorageService.saveUser(user);
       notifyListeners();
       return true;
     } catch (e) {
@@ -207,7 +207,7 @@ class AuthProvider extends ChangeNotifier {
       
       final avatarUrl = await _supabaseService.updateAvatar(_user!.id, imagePath);
       _user = _user!.copyWith(avatarUrl: avatarUrl);
-      await _localStorage.saveUser(_user!);
+      await LocalStorageService.saveUser(_user!);
       notifyListeners();
       return true;
     } catch (e) {
@@ -225,7 +225,7 @@ class AuthProvider extends ChangeNotifier {
       await _supabaseService.followUser(userId);
       if (_user != null) {
         _user = _user!.copyWith(followingCount: _user!.followingCount + 1);
-        await _localStorage.saveUser(_user!);
+        await LocalStorageService.saveUser(_user!);
         notifyListeners();
       }
       return true;
@@ -242,7 +242,7 @@ class AuthProvider extends ChangeNotifier {
       await _supabaseService.unfollowUser(userId);
       if (_user != null && _user!.followingCount > 0) {
         _user = _user!.copyWith(followingCount: _user!.followingCount - 1);
-        await _localStorage.saveUser(_user!);
+        await LocalStorageService.saveUser(_user!);
         notifyListeners();
       }
       return true;
@@ -267,7 +267,7 @@ class AuthProvider extends ChangeNotifier {
       notificationsEnabled: notificationsEnabled,
     );
     
-    await _localStorage.saveUser(_user!);
+    await LocalStorageService.saveUser(_user!);
     notifyListeners();
   }
 

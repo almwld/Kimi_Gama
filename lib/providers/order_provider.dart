@@ -29,7 +29,7 @@ class OrderProvider extends ChangeNotifier {
 
   // تحميل السلة من التخزين المحلي
   Future<void> _loadCart() async {
-    _cart = _localStorage.getCart();
+    _cart = LocalStorageService.getCart();
     notifyListeners();
   }
 
@@ -77,7 +77,7 @@ class OrderProvider extends ChangeNotifier {
         await updateCartItemQuantity(item.productId, newQuantity);
       } else {
         _cart.add(item);
-        await _localStorage.addToCart(item);
+        await LocalStorageService.addToCart(item);
         notifyListeners();
       }
     } catch (e) {
@@ -121,7 +121,7 @@ class OrderProvider extends ChangeNotifier {
   // إزالة من السلة
   Future<void> removeFromCart(String productId) async {
     try {
-      await _localStorage.removeFromCart(productId);
+      await LocalStorageService.removeFromCart(productId);
       _cart.removeWhere((i) => i.productId == productId);
       notifyListeners();
     } catch (e) {
@@ -133,7 +133,7 @@ class OrderProvider extends ChangeNotifier {
   // مسح السلة
   Future<void> clearCart() async {
     try {
-      await _localStorage.clearCart();
+      await LocalStorageService.clearCart();
       _cart = [];
       notifyListeners();
     } catch (e) {
