@@ -1,137 +1,98 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_animate/flutter_animate.dart';
-import 'package:flex_yemen/theme/app_theme.dart';
+import '../../theme/app_theme.dart';
 
 class CustomButton extends StatelessWidget {
   final String text;
-  final VoidCallback? onPressed;
-  final bool isLoading;
-  final bool isOutlined;
-  final IconData? icon;
+  final VoidCallback onPressed;
   final Color? backgroundColor;
   final Color? textColor;
   final double? width;
-  final double height;
+  final double? height;
+  final bool isLoading;
+  final bool isOutlined;
+  final IconData? icon;
   final double borderRadius;
-  final double fontSize;
-  final FontWeight fontWeight;
-  final EdgeInsets padding;
 
   const CustomButton({
-    Key? key,
+    super.key,
     required this.text,
-    this.onPressed,
-    this.isLoading = false,
-    this.isOutlined = false,
-    this.icon,
+    required this.onPressed,
     this.backgroundColor,
     this.textColor,
     this.width,
-    this.height = 54,
+    this.height,
+    this.isLoading = false,
+    this.isOutlined = false,
+    this.icon,
     this.borderRadius = 12,
-    this.fontSize = 16,
-    this.fontWeight = FontWeight.w600,
-    this.padding = const EdgeInsets.symmetric(horizontal: 24),
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = backgroundColor ?? AppColors.goldPrimary;
-    final txtColor = textColor ?? Colors.white;
-
-    Widget buttonChild;
+    final bgColor = backgroundColor ?? AppTheme.goldColor;
+    final txtColor = textColor ?? (isOutlined ? AppTheme.goldColor : Colors.black);
     
-    if (isLoading) {
-      buttonChild = SizedBox(
-        height: 24,
-        width: 24,
-        child: CircularProgressIndicator(
-          valueColor: AlwaysStoppedAnimation<Color>(
-            isOutlined ? bgColor : Colors.white,
+    return SizedBox(
+      width: width ?? double.infinity,
+      height: height ?? 50,
+      child: ElevatedButton(
+        onPressed: isLoading ? null : onPressed,
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isOutlined ? Colors.transparent : bgColor,
+          foregroundColor: txtColor,
+          elevation: isOutlined ? 0 : 2,
+          side: isOutlined ? BorderSide(color: bgColor) : null,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(borderRadius),
           ),
-          strokeWidth: 2.5,
         ),
-      );
-    } else {
-      buttonChild = Row(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (icon != null) ...[
-            Icon(icon, color: isOutlined ? bgColor : txtColor, size: 20),
-            SizedBox(width: 10),
-          ],
-          Text(
-            text,
-            style: TextStyle(
-              fontFamily: 'Changa',
-              fontSize: fontSize,
-              fontWeight: fontWeight,
-              color: isOutlined ? bgColor : txtColor,
-            ),
-          ),
-        ],
-      );
-    }
-
-    final button = SizedBox(
-      width: width,
-      height: height,
-      child: isOutlined
-          ? OutlinedButton(
-              onPressed: isLoading ? null : onPressed,
-              style: OutlinedButton.styleFrom(
-                side: BorderSide(color: bgColor, width: 2),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadius),
+        child: isLoading
+            ? const SizedBox(
+                width: 20,
+                height: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: AppTheme.goldColor,
                 ),
-                padding: padding,
+              )
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (icon != null) ...[
+                    Icon(icon, size: 20),
+                    const SizedBox(width: 8),
+                  ],
+                  Text(
+                    text,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
               ),
-              child: buttonChild,
-            )
-          : ElevatedButton(
-              onPressed: isLoading ? null : onPressed,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: bgColor,
-                foregroundColor: txtColor,
-                elevation: 2,
-                shadowColor: bgColor.withOpacity(0.4),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(borderRadius),
-                ),
-                padding: padding,
-              ),
-              child: buttonChild,
-            ),
+      ),
     );
-
-    return button
-        .animate(target: onPressed != null && !isLoading ? 1 : 0)
-        .scale(
-          begin: Offset(0.98, 0.98),
-          end: Offset(1, 1),
-          duration: 100.ms,
-        );
   }
 }
 
 class CustomIconButton extends StatelessWidget {
   final IconData icon;
-  final VoidCallback? onPressed;
+  final VoidCallback onPressed;
   final Color? backgroundColor;
   final Color? iconColor;
   final double size;
   final double iconSize;
 
   const CustomIconButton({
-    Key? key,
+    super.key,
     required this.icon,
-    this.onPressed,
+    required this.onPressed,
     this.backgroundColor,
     this.iconColor,
     this.size = 48,
     this.iconSize = 24,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -139,51 +100,37 @@ class CustomIconButton extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: backgroundColor ?? AppColors.goldPrimary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(size / 4),
+        color: backgroundColor ?? AppTheme.goldColor.withOpacity(0.1),
+        shape: BoxShape.circle,
       ),
       child: IconButton(
-        icon: Icon(
-          icon,
-          color: iconColor ?? AppColors.goldPrimary,
-          size: iconSize,
-        ),
+        icon: Icon(icon, size: iconSize),
+        color: iconColor ?? AppTheme.goldColor,
         onPressed: onPressed,
+        padding: EdgeInsets.zero,
       ),
     );
   }
 }
 
 class CustomFloatingButton extends StatelessWidget {
-  final VoidCallback onPressed;
   final IconData icon;
-  final String? label;
+  final VoidCallback onPressed;
   final Color? backgroundColor;
 
   const CustomFloatingButton({
-    Key? key,
-    required this.onPressed,
+    super.key,
     required this.icon,
-    this.label,
+    required this.onPressed,
     this.backgroundColor,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton.extended(
+    return FloatingActionButton(
       onPressed: onPressed,
-      backgroundColor: backgroundColor ?? AppColors.goldPrimary,
-      icon: Icon(icon, color: Colors.white),
-      label: label != null
-          ? Text(
-              label!,
-              style: TextStyle(
-                fontFamily: 'Changa',
-                color: Colors.white,
-                fontWeight: FontWeight.w600,
-              ),
-            )
-          : SizedBox.shrink(),
+      backgroundColor: backgroundColor ?? AppTheme.goldColor,
+      child: Icon(icon, color: Colors.black),
     );
   }
 }
