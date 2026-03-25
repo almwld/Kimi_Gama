@@ -265,7 +265,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           'أو',
                           style: TextStyle(
                             fontFamily: 'Changa',
-                            color: isDark ? Colors.white50 : Colors.black50,
+                            color: isDark ? Colors.white.withOpacity(0.5) : Colors.black.withOpacity(0.5),
                           ),
                         ),
                       ),

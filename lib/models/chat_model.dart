@@ -334,3 +334,23 @@ class MessageModel extends HiveObject {
     ),
   ];
 }
+
+  ChatModel copyWith({
+    String? id,
+    String? userId,
+    String? otherUserId,
+    String? lastMessage,
+    DateTime? lastMessageTime,
+    int? unreadCount,
+    Map<String, dynamic>? otherUser,
+  }) {
+    return ChatModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      otherUserId: otherUserId ?? this.otherUserId,
+      lastMessage: lastMessage ?? this.lastMessage,
+      lastMessageTime: lastMessageTime ?? this.lastMessageTime,
+      unreadCount: unreadCount ?? this.unreadCount,
+      otherUser: otherUser ?? this.otherUser,
+    );
+  }

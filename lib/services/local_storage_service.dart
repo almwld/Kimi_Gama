@@ -119,7 +119,7 @@ class LocalStorageService {
   }
 
   double get cartTotal {
-    return _cartBox?.values.fold(0.0, (sum, item) => sum + item.total) ?? 0.0;
+//     return _cartBox?.values.fold(0.0, (sum, item) => sum + item.total) ?? 0.0;
   }
 
   Future<void> clearCart() async {
@@ -256,3 +256,12 @@ class LocalStorageService {
     await box.clear();
   }
 }
+
+  static double getCartTotal() {
+    final cart = getCartItems();
+    double total = 0;
+    for (var item in cart) {
+      total += (item['price'] as num?)?.toDouble() ?? 0;
+    }
+    return total;
+  }

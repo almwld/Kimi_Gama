@@ -359,3 +359,27 @@ class OrderItemModel extends HiveObject {
     ),
   ];
 }
+
+  OrderModel copyWith({
+    String? id,
+    String? userId,
+    double? total,
+    String? status,
+    String? shippingAddress,
+    String? paymentMethod,
+    DateTime? createdAt,
+    List<OrderItem>? items,
+    Map<String, dynamic>? seller,
+  }) {
+    return OrderModel(
+      id: id ?? this.id,
+      userId: userId ?? this.userId,
+      total: total ?? this.total,
+      status: status ?? this.status,
+      shippingAddress: shippingAddress ?? this.shippingAddress,
+      paymentMethod: paymentMethod ?? this.paymentMethod,
+      createdAt: createdAt ?? this.createdAt,
+      items: items ?? this.items,
+      seller: seller ?? this.seller,
+    );
+  }

@@ -64,7 +64,7 @@ class CustomTextField extends StatelessWidget {
               fontFamily: 'Changa',
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white70 : Colors.black87,
+              color: isDark ? Colors.white70 : Colors.black.withOpacity(0.08)7,
             ),
           ),
           SizedBox(height: 8),
@@ -87,7 +87,7 @@ class CustomTextField extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'Changa',
             fontSize: 15,
-            color: isDark ? Colors.white : Colors.black87,
+            color: isDark ? Colors.white : Colors.black.withOpacity(0.08)7,
           ),
           decoration: InputDecoration(
             hintText: hint,
@@ -158,7 +158,7 @@ class CustomTextField extends StatelessWidget {
             disabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide(
-                color: isDark ? Colors.white8 : Colors.black8,
+                color: isDark ? Colors.white.withOpacity(0.08) : Colors.black.withOpacity(0.08),
                 width: 1,
               ),
             ),
@@ -197,7 +197,7 @@ class CustomSearchField extends StatelessWidget {
       style: TextStyle(
         fontFamily: 'Changa',
         fontSize: 15,
-        color: isDark ? Colors.white : Colors.black87,
+        color: isDark ? Colors.white : Colors.black.withOpacity(0.08)7,
       ),
       decoration: InputDecoration(
         hintText: hint,
@@ -286,7 +286,7 @@ class CustomDropdownField<T> extends StatelessWidget {
               fontFamily: 'Changa',
               fontSize: 14,
               fontWeight: FontWeight.w600,
-              color: isDark ? Colors.white70 : Colors.black87,
+              color: isDark ? Colors.white70 : Colors.black.withOpacity(0.08)7,
             ),
           ),
           SizedBox(height: 8),
@@ -345,7 +345,7 @@ class CustomDropdownField<T> extends StatelessWidget {
           style: TextStyle(
             fontFamily: 'Changa',
             fontSize: 15,
-            color: isDark ? Colors.white : Colors.black87,
+            color: isDark ? Colors.white : Colors.black.withOpacity(0.08)7,
           ),
           dropdownColor: isDark ? AppColors.darkCard : AppColors.lightCard,
         ),

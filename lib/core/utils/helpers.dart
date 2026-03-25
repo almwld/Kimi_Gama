@@ -83,7 +83,7 @@ class Helpers {
       case 'SAR':
         return amountInYer * AppConstants.yerToSar;
       case 'USD':
-        return amountInYer * AppColors.yerToUsd;
+//         return amountInYer * AppColors.yerToUsd;
       case 'YER':
       default:
         return amountInYer;
