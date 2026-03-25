@@ -3,169 +3,149 @@ name: Build Android APK
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: '17'
-      
-      - name: Setup Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.22.0'
-          channel: 'stable'
-      
-      - name: Get dependencies
-        run: flutter pub get
-      
-      - name: Create Android files
-        run: |
-          mkdir -p android/app/src/main/kotlin/com/flexyemen/app
-          mkdir -p android/gradle/wrapper
-          mkdir -p android/app/src/main/res/values
-          mkdir -p android/app/src/main/res/drawable
-          
-          # gradle.properties لتفعيل AndroidX
-          echo 'android.useAndroidX=true
-          android.enableJetifier=true' > android/gradle.properties
-          
-          # build.gradle (root)
-          echo 'buildscript {
-              ext.kotlin_version = "1.9.0"
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-              dependencies {
-                  classpath "com.android.tools.build:gradle:7.4.2"
-                  classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-              }
-          }
-          allprojects {
-              repositories {
-                  google()
-                  mavenCentral()
-              }
-          }
-          rootProject.buildDir = "../build"
-          subprojects {
-              project.buildDir = "${rootProject.buildDir}/${project.name}"
-          }
-          subprojects {
-              project.evaluationDependsOn(":app")
-          }
-          tasks.register("clean", Delete) {
-              delete rootProject.buildDir
-          }' > android/build.gradle
-          
-          # app/build.gradle
-          echo 'def localProperties = new Properties()
-          def localPropertiesFile = rootProject.file("local.properties")
-          if (localPropertiesFile.exists()) {
-              localPropertiesFile.withReader("UTF-8") { reader ->
-                  localProperties.load(reader)
-              }
-          }
-          def flutterRoot = localProperties.getProperty("flutter.sdk")
-          if (flutterRoot == null) {
-              throw new GradleException("Flutter SDK not found.")
-          }
-          def flutterVersionCode = localProperties.getProperty("flutter.versionCode")
-          if (flutterVersionCode == null) {
-              flutterVersionCode = "1"
-          }
-          def flutterVersionName = localProperties.getProperty("flutter.versionName")
-          if (flutterVersionName == null) {
-              flutterVersionName = "1.0"
-          }
-          apply plugin: "com.android.application"
-          apply plugin: "kotlin-android"
-          apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
-          android {
-              compileSdk 34
-              ndkVersion flutter.ndkVersion
-              compileOptions {
-                  sourceCompatibility JavaVersion.VERSION_1_8
-                  targetCompatibility JavaVersion.VERSION_1_8
-              }
-              kotlinOptions {
-                  jvmTarget = "1.8"
-              }
-              sourceSets {
-                  main.java.srcDirs += "src/main/kotlin"
-              }
-              defaultConfig {
-                  applicationId "com.flexyemen.app"
-                  minSdk 21
-                  targetSdk 34
-                  versionCode flutterVersionCode.toInteger()
-                  versionName flutterVersionName
-              }
-              buildTypes {
-                  release {
-                      signingConfig signingConfigs.debug
-                  }
-              }
-          }
-          flutter {
-              source "../.."
-          }
-          dependencies {
-              implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-          }' > android/app/build.gradle
-          
-          echo 'include ":app"' > android/settings.gradle
-          
-          echo 'distributionBase=GRADLE_USER_HOME
-          distributionPath=wrapper/dists
-          zipStoreBase=GRADLE_USER_HOME
-          zipStorePath=wrapper/dists
-          distributionUrl=https\://services.gradle.org/distributions/gradle-8.0-all.zip' > android/gradle/wrapper/gradle-wrapper.properties
-          
-          echo '<?xml version="1.0" encoding="utf-8"?>
-          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-              <application android:label="Flex Yemen" android:name="${applicationName}" android:icon="@mipmap/ic_launcher">
-                  <activity android:name=".MainActivity" android:exported="true" android:launchMode="singleTop" android:theme="@style/LaunchTheme">
-                      <intent-filter>
-                          <action android:name="android.intent.action.MAIN"/>
-                          <category android:name="android.intent.category.LAUNCHER"/>
-                      </intent-filter>
-                  </activity>
-                  <meta-data android:name="flutterEmbedding" android:value="2"/>
-              </application>
-          </manifest>' > android/app/src/main/AndroidManifest.xml
-          
-          echo 'package com.flexyemen.app
-          import io.flutter.embedding.android.FlutterActivity
-          class MainActivity: FlutterActivity()' > android/app/src/main/kotlin/com/flexyemen/app/MainActivity.kt
-          
-          echo '<?xml version="1.0" encoding="utf-8"?>
-          <resources>
-              <style name="LaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
-                  <item name="android:windowBackground">@drawable/launch_background</item>
-              </style>
-          </resources>' > android/app/src/main/res/values/styles.xml
-          
-          echo '<?xml version="1.0" encoding="utf-8"?>
-          <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-              <item android:drawable="@android:color/white"/>
-          </layer-list>' > android/app/src/main/res/drawable/launch_background.xml
-          
-          echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
-      
-      - name: Build APK
-        run: flutter build apk --release --split-per-abi
-      
-      - name: Upload APK
-        uses: actions/upload-artifact@v4
-        with:
-          name: flex-yemen-apk
-          path: build/app/outputs/flutter-apk/*.apk
+    - uses: actions/checkout@v4
+    
+    - name: Setup Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '17'
+
+    - name: Setup Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.22.0'
+
+    - name: Build
+      run: |
+        mkdir /tmp/code
+        cp -r lib /tmp/code/
+        cp -r assets /tmp/code/ 2>/dev/null || true
+        cp pubspec.yaml /tmp/code/
+        
+        rm -rf android ios
+        
+        flutter create --org com.kimigama --project-name kimigama --platforms android .
+        
+        rm -rf lib assets
+        cp -r /tmp/code/lib .
+        cp -r /tmp/code/assets . 2>/dev/null || true
+        cp /tmp/code/pubspec.yaml .
+        
+        mkdir -p assets/images assets/icons assets/fonts
+        
+        # إضافة namespace إلى app/build.gradle
+        cat > android/app/build.gradle << 'APP'
+        plugins {
+            id "com.android.application"
+            id "kotlin-android"
+            id "dev.flutter.flutter-gradle-plugin"
+        }
+        
+        def localProperties = new Properties()
+        def localPropertiesFile = rootProject.file('local.properties')
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.withReader('UTF-8') { reader ->
+                localProperties.load(reader)
+            }
+        }
+        
+        def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '1')
+        def flutterVersionName = localProperties.getProperty('flutter.versionName', '1.0')
+        
+        android {
+            namespace "com.kimigama.app"
+            compileSdkVersion 34
+            ndkVersion "27.0.12077973"
+            
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_17
+                targetCompatibility JavaVersion.VERSION_17
+                coreLibraryDesugaringEnabled true
+            }
+            
+            kotlinOptions {
+                jvmTarget = '17'
+            }
+            
+            sourceSets {
+                main.java.srcDirs += 'src/main/kotlin'
+            }
+            
+            defaultConfig {
+                applicationId "com.kimigama.app"
+                minSdkVersion 21
+                targetSdkVersion 34
+                versionCode flutterVersionCode.toInteger()
+                versionName flutterVersionName
+                multiDexEnabled true
+            }
+            
+            buildTypes {
+                release {
+                    signingConfig signingConfigs.debug
+                    minifyEnabled true
+                    shrinkResources true
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                }
+            }
+        }
+        
+        flutter {
+            source '../..'
+        }
+        
+        dependencies {
+            implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
+            implementation 'androidx.multidex:multidex:2.0.1'
+            coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+        }
+        APP
+        
+        # إضافة flutterEmbedding
+        sed -i '/<application>/a \        <meta-data android:name="flutterEmbedding" android:value="2" />' android/app/src/main/AndroidManifest.xml
+        
+        # تحديث settings.gradle
+        cat > android/settings.gradle << 'SETTINGS'
+        pluginManagement {
+            def flutterSdkPath = {
+                def properties = new Properties()
+                file("local.properties").withInputStream { properties.load(it) }
+                def flutterSdkPath = properties.getProperty("flutter.sdk")
+                assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
+                return flutterSdkPath
+            }()
+            includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
+            repositories {
+                google()
+                mavenCentral()
+                gradlePluginPortal()
+            }
+        }
+        plugins {
+            id "dev.flutter.flutter-plugin-loader" version "1.0.0"
+            id "com.android.application" version "8.7.0" apply false
+            id "org.jetbrains.kotlin.android" version "1.9.22" apply false
+        }
+        include ":app"
+        SETTINGS
+        
+        # تحديث gradle-wrapper
+        echo "distributionUrl=https\\://services.gradle.org/distributions/gradle-8.9-all.zip" > android/gradle/wrapper/gradle-wrapper.properties
+        
+        # تنظيف cache
+        rm -rf ~/.gradle/caches/
+        
+        flutter pub get
+        flutter build apk --release --split-per-abi
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: build/app/outputs/flutter-apk/*.apk
