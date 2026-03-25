@@ -2,45 +2,64 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [ main, master ]
   pull_request:
-    branches: [ main ]
+    branches: [ main, master ]
 
 jobs:
   build-android:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup Java
-      uses: actions/setup-java@v4
-      with:
-        distribution: 'temurin'
-        java-version: '17'
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Setup Flutter
-      uses: subosito/flutter-action@v2
-      with:
-        flutter-version: '3.19.0'
-        channel: 'stable'
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.22.0'
 
-    - name: Recreate Android project
-      run: |
-        flutter create --project-name=flex_yemen_temp --org com.flexyemen ./temp_project
-        rm -rf android
-        cp -r temp_project/android .
-        rm -rf temp_project
+      - name: Build
+        run: |
+          # حفظ الكود
+          mkdir /tmp/code
+          cp -r lib /tmp/code/
+          cp -r assets /tmp/code/ 2>/dev/null || true
+          cp pubspec.yaml /tmp/code/
+          cp .env /tmp/code/ 2>/dev/null || true
 
-    - name: Install dependencies
-      run: flutter pub get
+          # حذف android/ios القديم
+          rm -rf android ios
 
-    - name: Build APK
-      run: flutter build apk --release
+          # إنشاء مشروع Flutter جديد
+          flutter create --org com.kimigama --project-name kimi_gama --platforms android .
 
-    - name: Upload APK
-      uses: actions/upload-artifact@v4
-      with:
-        name: app-release
-        path: build/app/outputs/flutter-apk/app-release.apk
+          # استعادة الكود
+          rm -rf lib assets
+          cp -r /tmp/code/lib .
+          cp -r /tmp/code/assets . 2>/dev/null || true
+          cp /tmp/code/pubspec.yaml .
+          cp /tmp/code/.env . 2>/dev/null || true
+
+          # إنشاء مجلدات assets
+          mkdir -p assets/images assets/icons assets/fonts assets/animations
+
+          # إضافة flutterEmbedding
+          sed -i '/<application>/a \        <meta-data android:name="flutterEmbedding" android:value="2" />' android/app/src/main/AndroidManifest.xml
+
+          # تنظيف cache Gradle
+          rm -rf ~/.gradle/caches/
+
+          # بناء
+          flutter pub get
+          flutter build apk --release --split-per-abi
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release
+          path: build/app/outputs/flutter-apk/*.apk
