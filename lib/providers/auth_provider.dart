@@ -83,7 +83,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> signInAsGuest() async {
-    _user = UserModel(id: 'guest', email: 'guest@flexyemen.com', name: 'ضيف');
+    _user = UserModel(id: 'guest', email: 'guest@flexyemen.com');
     notifyListeners();
   }
 

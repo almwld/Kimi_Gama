@@ -45,19 +45,19 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _loadData() {
     Future.microtask(() {
-      Provider.of<ProductProvider>(context, listen: false).getProducts(refresh: true);
+      Provider.of<ProductProvider>(context, listen: false)// .getProducts(refresh: true);
     });
   }
 
   void _onScroll() {
     if (_scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - 200) {
-      Provider.of<ProductProvider>(context, listen: false).getProducts();
+      Provider.of<ProductProvider>(context, listen: false)// .getProducts();
     }
   }
 
   Future<void> _onRefresh() async {
-    await Provider.of<ProductProvider>(context, listen: false).getProducts(refresh: true);
+    await Provider.of<ProductProvider>(context, listen: false)// .getProducts(refresh: true);
   }
 
   @override

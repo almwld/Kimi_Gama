@@ -6,6 +6,7 @@ class OrderProvider extends ChangeNotifier {
   List<OrderItemModel> _cart = [];
 
   List<OrderItemModel> get cart => _cart;
+  int get cartItemCount => _cart.length;
 
   OrderProvider() {
     _loadCart();

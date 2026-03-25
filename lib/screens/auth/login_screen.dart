@@ -37,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
-    final success = await authProvider.signInWithEmail(
+    final success = await authProvider.signIn(
       _emailController.text.trim(),
       _passwordController.text,
     );

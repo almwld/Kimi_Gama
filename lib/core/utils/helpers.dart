@@ -10,11 +10,17 @@ class Helpers {
     return price.toStringAsFixed(0);
   }
 
-  static void showSnackBar(BuildContext context, String message, {bool isError = false}) {
+  static void showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  static void showErrorSnackBar(BuildContext context, String message) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        backgroundColor: isError ? Colors.red : Colors.green,
+        backgroundColor: Colors.red,
       ),
     );
   }

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import '../models/product_model.dart';
 import '../services/local_storage_service.dart';
+import '../services/supabase_service.dart';
 
 class ProductProvider extends ChangeNotifier {
   List<ProductModel> _products = [];
   List<String> _favoriteIds = [];
+  bool _isLoading = false;
 
   List<ProductModel> get products => _products;
   List<String> get favorites => _favoriteIds;
+  bool get isLoading => _isLoading;
 
   ProductProvider() {
     _loadFavorites();
@@ -32,8 +35,19 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setProducts(List<ProductModel> products) {
-    _products = products;
+  Future<void> getProducts({bool refresh = false}) async {
+    if (_isLoading) return;
+    _isLoading = true;
     notifyListeners();
+
+    try {
+      final productsData = await SupabaseService.getProducts();
+      _products = productsData.map((p) => ProductModel.fromJson(p)).toList();
+    } catch (e) {
+      print('Error loading products: $e');
+    } finally {
+      _isLoading = false;
+      notifyListeners();
+    }
   }
 }
