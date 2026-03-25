@@ -13,10 +13,14 @@ class AppTheme {
   
   static const Color error = Color(0xFFE74C3C);
   static const Color success = Color(0xFF2ECC71);
+  static const Color warning = Color(0xFFF39C12);
+  static const Color info = Color(0xFF3498DB);
   
   static const Color darkBackground = Color(0xFF121212);
-  static const Color lightBackground = Color(0xFFF5F5F5);
+  static const Color darkSurface = Color(0xFF1E1E1E);
   static const Color darkCard = Color(0xFF2C2C2C);
+  static const Color lightBackground = Color(0xFFF5F5F5);
+  static const Color lightSurface = Color(0xFFFFFFFF);
   static const Color lightCard = Color(0xFFFAFAFA);
   
   static ThemeData lightTheme = ThemeData(
@@ -24,6 +28,11 @@ class AppTheme {
     brightness: Brightness.light,
     primaryColor: goldColor,
     scaffoldBackgroundColor: lightBackground,
+    colorScheme: const ColorScheme.light(
+      primary: goldColor,
+      secondary: goldLight,
+      error: error,
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -37,6 +46,13 @@ class AppTheme {
         ),
       ),
     ),
+    cardTheme: CardTheme(
+      color: lightCard,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
+      ),
+    ),
   );
   
   static ThemeData darkTheme = ThemeData(
@@ -44,6 +60,11 @@ class AppTheme {
     brightness: Brightness.dark,
     primaryColor: goldColor,
     scaffoldBackgroundColor: darkBackground,
+    colorScheme: const ColorScheme.dark(
+      primary: goldColor,
+      secondary: goldLight,
+      error: error,
+    ),
     appBarTheme: const AppBarTheme(
       backgroundColor: Colors.transparent,
       elevation: 0,
@@ -55,6 +76,13 @@ class AppTheme {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
+      ),
+    ),
+    cardTheme: CardTheme(
+      color: darkCard,
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16),
       ),
     ),
   );

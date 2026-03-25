@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: RefreshIndicator(
         onRefresh: _onRefresh,
-        color: AppColors.goldPrimary,
+        color: AppTheme.goldColor,
         child: CustomScrollView(
           controller: _scrollController,
           slivers: [
@@ -131,7 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       width: 4,
                       height: 24,
                       decoration: BoxDecoration(
-                        color: AppColors.goldPrimary,
+                        color: AppTheme.goldColor,
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -154,7 +154,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         'عرض الكل',
                         style: TextStyle(
                           fontFamily: 'Changa',
-                          color: AppColors.goldPrimary,
+                          color: AppTheme.goldColor,
                         ),
                       ),
                     ),
@@ -312,7 +312,7 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color: _currentBannerIndex == entry.key
-                    ? AppColors.goldPrimary
+                    ? AppTheme.goldColor
                     : Colors.grey,
               ),
             );
@@ -414,7 +414,7 @@ class _HomeScreenState extends State<HomeScreen> {
             children: [
               Icon(
                 Icons.gavel,
-                color: AppColors.goldPrimary,
+                color: AppTheme.goldColor,
                 size: 24,
               ),
               SizedBox(width: 8),
@@ -431,14 +431,14 @@ class _HomeScreenState extends State<HomeScreen> {
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
-                  color: AppColors.error.withOpacity(0.1),
+                  color: AppTheme.error.withOpacity(0.1),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Row(
                   children: [
                     Icon(
                       Icons.timer,
-                      color: AppColors.error,
+                      color: AppTheme.error,
                       size: 16,
                     ),
                     SizedBox(width: 4),
@@ -448,7 +448,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         fontFamily: 'Changa',
                         fontSize: 12,
                         fontWeight: FontWeight.bold,
-                        color: AppColors.error,
+                        color: AppTheme.error,
                       ),
                     ),
                   ],
@@ -507,7 +507,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Container(
                     padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.error,
+                      color: AppTheme.error,
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
@@ -546,7 +546,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     fontFamily: 'Changa',
                     fontSize: 14,
                     fontWeight: FontWeight.bold,
-                    color: AppColors.goldPrimary,
+                    color: AppTheme.goldColor,
                   ),
                 ),
                 SizedBox(height: 4),
