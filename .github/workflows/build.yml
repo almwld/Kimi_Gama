@@ -34,26 +34,18 @@ jobs:
 
     - name: Create Android project from scratch
       run: |
-        # إنشاء مجلد android من الصفر باستخدام flutter create
         flutter create --platforms=android --project-name=flex_yemen --org com.flexyemen ./temp_android
-        # نسخ مجلد android إلى المشروع
         cp -r temp_android/android .
-        # تنظيف الملفات المؤقتة
         rm -rf temp_android
 
     - name: Fix Kotlin version to 1.9.0
       run: |
-        # تحديث إصدار Kotlin في build.gradle
         sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = '\''1.9.0'\''/' android/build.gradle
-        # تحديث إصدار Gradle
-        cat > android/gradle/wrapper/gradle-wrapper.properties << 'WRAPPER'
-distributionBase=GRADLE_USER_HOME
+        echo 'distributionBase=GRADLE_USER_HOME
 distributionPath=wrapper/dists
 zipStoreBase=GRADLE_USER_HOME
 zipStorePath=wrapper/dists
-distributionUrl=https\://services.gradle.org/distributions/gradle-8.5-all.zip
-WRAPPER
-        # تحديث إصدارات SDK
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.5-all.zip' > android/gradle/wrapper/gradle-wrapper.properties
         sed -i 's/compileSdk [0-9]*/compileSdk 34/' android/app/build.gradle
         sed -i 's/targetSdk [0-9]*/targetSdk 34/' android/app/build.gradle
         sed -i 's/minSdk [0-9]*/minSdk 21/' android/app/build.gradle
