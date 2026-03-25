@@ -185,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             (context, index) {
                               final product = productProvider.products[index];
                               return ProductCard(
-                                product: product,
+                                product: product.toJson(),
                                 onTap: () {
                                   Navigator.push(
                                     context,

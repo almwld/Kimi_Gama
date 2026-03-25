@@ -1,261 +1,99 @@
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:flex_yemen/models/user_model.dart';
-import 'package:flex_yemen/models/product_model.dart';
-import 'package:flex_yemen/models/order_model.dart';
-import 'package:flex_yemen/models/chat_model.dart';
-import 'package:flex_yemen/models/wallet_model.dart';
-import 'package:flex_yemen/models/notification_model.dart';
 
 class LocalStorageService {
-  static final LocalStorageService _instance = LocalStorageService._internal();
-  factory LocalStorageService() => _instance;
-  LocalStorageService._internal();
+  static const String _userBox = 'userBox';
+  static const String _settingsBox = 'settingsBox';
+  static const String _favoritesBox = 'favoritesBox';
+  static const String _cartBox = 'cartBox';
 
-  // Boxes
-  Box<UserModel>? _userBox;
-  Box<ProductModel>? _favoritesBox;
-  Box<OrderItemModel>? _cartBox;
-  Box<dynamic>? _settingsBox;
-  Box<String>? _searchHistoryBox;
-  Box<NotificationModel>? _notificationsBox;
+  static late Box _userBoxInstance;
+  static late Box _settingsBoxInstance;
+  static late Box _favoritesBoxInstance;
+  static late Box _cartBoxInstance;
 
-  // تهيئة Hive
-  Future<void> init() async {
+  static Future<void> init() async {
     await Hive.initFlutter();
-    
-    // تسجيل المحولات
-//    Hive.registerAdapter(UserModelAdapter());
-//    Hive.registerAdapter(ProductModelAdapter());
-//    Hive.registerAdapter(OrderItemModelAdapter());
-//    Hive.registerAdapter(WalletModelAdapter());
-//    Hive.registerAdapter(TransactionModelAdapter());
-//    Hive.registerAdapter(ChatModelAdapter());
-//    Hive.registerAdapter(MessageModelAdapter());
-//    Hive.registerAdapter(NotificationModelAdapter());
-//    Hive.registerAdapter(RatingModelAdapter());
-//    Hive.registerAdapter(AdModelAdapter());
-    
-    // فتح الصناديق
-    _userBox = await Hive.openBox<UserModel>('user');
-    _favoritesBox = await Hive.openBox<ProductModel>('favorites');
-    _cartBox = await Hive.openBox<OrderItemModel>('cart');
-    _settingsBox = await Hive.openBox<dynamic>('settings');
-    _searchHistoryBox = await Hive.openBox<String>('search_history');
-    _notificationsBox = await Hive.openBox<NotificationModel>('notifications');
+    _userBoxInstance = await Hive.openBox(_userBox);
+    _settingsBoxInstance = await Hive.openBox(_settingsBox);
+    _favoritesBoxInstance = await Hive.openBox(_favoritesBox);
+    _cartBoxInstance = await Hive.openBox(_cartBox);
   }
 
-  // ==================== المستخدم ====================
-  
-  Future<void> saveUser(UserModel user) async {
-    await _userBox?.put('current_user', user);
+  // ===== المستخدم =====
+  static Future<void> saveUser(Map<String, dynamic> user) async {
+    await _userBoxInstance.put('current_user', user);
   }
 
-  UserModel? getUser() {
-    return _userBox?.get('current_user');
+  static Map<String, dynamic>? getUser() {
+    return _userBoxInstance.get('current_user');
   }
 
-  Future<void> deleteUser() async {
-    await _userBox?.delete('current_user');
+  static Future<void> clearUser() async {
+    await _userBoxInstance.delete('current_user');
   }
 
-  bool get isLoggedIn => getUser() != null;
-
-  // ==================== المفضلة ====================
-  
-  Future<void> addToFavorites(ProductModel product) async {
-    await _favoritesBox?.put(product.id, product);
+  // ===== الإعدادات =====
+  static Future<void> setDarkMode(bool isDark) async {
+    await _settingsBoxInstance.put('dark_mode', isDark);
   }
 
-  Future<void> removeFromFavorites(String productId) async {
-    await _favoritesBox?.delete(productId);
+  static bool getDarkMode() {
+    return _settingsBoxInstance.get('dark_mode') ?? false;
   }
 
-  List<ProductModel> getFavorites() {
-    return _favoritesBox?.values.toList() ?? [];
+  static Future<void> setLanguage(String lang) async {
+    await _settingsBoxInstance.put('language', lang);
   }
 
-  bool isFavorite(String productId) {
-    return _favoritesBox?.containsKey(productId) ?? false;
+  static String getLanguage() {
+    return _settingsBoxInstance.get('language') ?? 'ar';
   }
 
-  Future<void> clearFavorites() async {
-    await _favoritesBox?.clear();
-  }
-
-  // ==================== سلة التسوق ====================
-  
-  Future<void> addToCart(OrderItemModel item) async {
-    await _cartBox?.put(item.productId, item);
-  }
-
-  Future<void> updateCartItem(String productId, int quantity) async {
-    final item = _cartBox?.get(productId);
-    if (item != null) {
-      final updatedItem = OrderItemModel(
-        id: item.id,
-        productId: item.productId,
-        productName: item.productName,
-        productImage: item.productImage,
-        price: item.price,
-        quantity: quantity,
-        total: item.price * quantity,
-        sellerId: item.sellerId,
-        sellerName: item.sellerName,
-      );
-      await _cartBox?.put(productId, updatedItem);
+  // ===== المفضلة =====
+  static Future<void> addFavorite(String productId) async {
+    List<String> favs = getFavorites();
+    if (!favs.contains(productId)) {
+      favs.add(productId);
+      await _favoritesBoxInstance.put('favorites', favs);
     }
   }
 
-  Future<void> removeFromCart(String productId) async {
-    await _cartBox?.delete(productId);
+  static Future<void> removeFavorite(String productId) async {
+    List<String> favs = getFavorites();
+    favs.remove(productId);
+    await _favoritesBoxInstance.put('favorites', favs);
   }
 
-  List<OrderItemModel> getCart() {
-    return _cartBox?.values.toList() ?? [];
+  static List<String> getFavorites() {
+    return _favoritesBoxInstance.get('favorites', defaultValue: <String>[]);
   }
 
-  int get cartItemCount {
-    return _cartBox?.length ?? 0;
+  static bool isFavorite(String productId) {
+    return getFavorites().contains(productId);
   }
 
-  double get cartTotal {
-//     return _cartBox?.values.fold(0.0, (sum, item) => sum + item.total) ?? 0.0;
+  // ===== سلة التسوق =====
+  static Future<void> saveCartItems(List<Map<String, dynamic>> items) async {
+    await _cartBoxInstance.put('cart', items);
   }
 
-  Future<void> clearCart() async {
-    await _cartBox?.clear();
+  static List<Map<String, dynamic>> getCartItems() {
+    return _cartBoxInstance.get('cart', defaultValue: <Map<String, dynamic>>[]);
   }
 
-  // ==================== الإعدادات ====================
-  
-  Future<void> setSetting(String key, dynamic value) async {
-    await _settingsBox?.put(key, value);
+  static Future<void> addToCart(Map<String, dynamic> item) async {
+    List<Map<String, dynamic>> cart = getCartItems();
+    cart.add(item);
+    await saveCartItems(cart);
   }
 
-  dynamic getSetting(String key, {dynamic defaultValue}) {
-    return _settingsBox?.get(key, defaultValue: defaultValue);
+  static Future<void> removeFromCart(String productId) async {
+    List<Map<String, dynamic>> cart = getCartItems();
+    cart.removeWhere((item) => item['productId'] == productId);
+    await saveCartItems(cart);
   }
 
-  // الثيم
-  Future<void> setTheme(String theme) async {
-    await setSetting('theme', theme);
-  }
-
-  String getTheme() {
-    return getSetting('theme', defaultValue: 'system');
-  }
-
-  // اللغة
-  Future<void> setLanguage(String language) async {
-    await setSetting('language', language);
-  }
-
-  String getLanguage() {
-    return getSetting('language', defaultValue: 'ar');
-  }
-
-  // الإشعارات
-  Future<void> setNotificationsEnabled(bool enabled) async {
-    await setSetting('notifications_enabled', enabled);
-  }
-
-  bool getNotificationsEnabled() {
-    return getSetting('notifications_enabled', defaultValue: true);
-  }
-
-  // صوت الإشعارات
-  Future<void> setNotificationSound(bool enabled) async {
-    await setSetting('notification_sound', enabled);
-  }
-
-  bool getNotificationSound() {
-    return getSetting('notification_sound', defaultValue: true);
-  }
-
-  // ==================== سجل البحث ====================
-  
-  Future<void> addSearchQuery(String query) async {
-    if (query.trim().isEmpty) return;
-    
-    // إزالة الاستعلام إذا كان موجوداً مسبقاً
-    final existingIndex = _searchHistoryBox?.values.toList().indexOf(query);
-    if (existingIndex != null && existingIndex >= 0) {
-      await _searchHistoryBox?.deleteAt(existingIndex);
-    }
-    
-    // إضافة الاستعلام في البداية
-    await _searchHistoryBox?.add(query);
-    
-    // الاحتفاظ بآخر 20 استعلام فقط
-    if ((_searchHistoryBox?.length ?? 0) > 20) {
-      await _searchHistoryBox?.deleteAt(0);
-    }
-  }
-
-  List<String> getSearchHistory() {
-    return _searchHistoryBox?.values.toList().reversed.toList() ?? [];
-  }
-
-  Future<void> clearSearchHistory() async {
-    await _searchHistoryBox?.clear();
-  }
-
-  Future<void> removeSearchQuery(String query) async {
-    final key = _searchHistoryBox?.values.toList().indexOf(query);
-    if (key != null && key >= 0) {
-      await _searchHistoryBox?.deleteAt(key);
-    }
-  }
-
-  // ==================== الإشعارات المحلية ====================
-  
-  Future<void> saveNotification(NotificationModel notification) async {
-    await _notificationsBox?.put(notification.id, notification);
-  }
-
-  List<NotificationModel> getNotifications() {
-    return _notificationsBox?.values.toList() ?? [];
-  }
-
-  Future<void> deleteNotification(String notificationId) async {
-    await _notificationsBox?.delete(notificationId);
-  }
-
-  Future<void> clearNotifications() async {
-    await _notificationsBox?.clear();
-  }
-
-  // ==================== مسح جميع البيانات ====================
-  
-  Future<void> clearAll() async {
-    await _userBox?.clear();
-    await _favoritesBox?.clear();
-    await _cartBox?.clear();
-    await _settingsBox?.clear();
-    await _searchHistoryBox?.clear();
-    await _notificationsBox?.clear();
-  }
-
-  // ==================== تخزين مؤقت للمنتجات ====================
-  
-  Future<void> cacheProducts(List<ProductModel> products, String key) async {
-    final box = await Hive.openBox<ProductModel>('cached_products_$key');
-    await box.clear();
-    for (var product in products) {
-      await box.put(product.id, product);
-    }
-  }
-
-  Future<List<ProductModel>> getCachedProducts(String key) async {
-    final box = await Hive.openBox<ProductModel>('cached_products_$key');
-    return box.values.toList();
-  }
-
-  Future<void> clearCachedProducts(String key) async {
-    final box = await Hive.openBox<ProductModel>('cached_products_$key');
-    await box.clear();
+  static Future<void> clearCart() async {
+    await _cartBoxInstance.delete('cart');
   }
 }
-
-    return total;
-  }

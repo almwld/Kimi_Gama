@@ -60,7 +60,7 @@ class CustomTextField extends StatelessWidget {
         if (label != null) ...[
           Text(
             label!,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Changa',
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -84,20 +84,20 @@ class CustomTextField extends StatelessWidget {
           readOnly: readOnly,
           focusNode: focusNode,
           textCapitalization: textCapitalization,
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Changa',
             fontSize: 15,
             color: isDark ? Colors.white : Colors.black.withOpacity(0.08),
           ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: const TextStyle(
+            hintStyle: TextStyle(
               fontFamily: 'Changa',
               fontSize: 14,
               color: isDark ? Colors.white38 : Colors.black38,
             ),
             errorText: errorText,
-            errorStyle: const TextStyle(
+            errorStyle: TextStyle(
               fontFamily: 'Changa',
               fontSize: 12,
             ),
@@ -194,14 +194,14 @@ class CustomSearchField extends StatelessWidget {
       onChanged: onChanged,
       onSubmitted: onSubmitted,
       textInputAction: TextInputAction.search,
-      style: const TextStyle(
+      style: TextStyle(
         fontFamily: 'Changa',
         fontSize: 15,
         color: isDark ? Colors.white : Colors.black.withOpacity(0.08),
       ),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle: const TextStyle(
+        hintStyle: TextStyle(
           fontFamily: 'Changa',
           fontSize: 14,
           color: isDark ? Colors.white38 : Colors.black38,
@@ -282,7 +282,7 @@ class CustomDropdownField<T> extends StatelessWidget {
         if (label != null) ...[
           Text(
             label!,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Changa',
               fontSize: 14,
               fontWeight: FontWeight.w600,
@@ -299,7 +299,7 @@ class CustomDropdownField<T> extends StatelessWidget {
           hint: hint != null
               ? Text(
                   hint!,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Changa',
                     fontSize: 14,
                     color: isDark ? Colors.white38 : Colors.black38,
@@ -342,7 +342,7 @@ class CustomDropdownField<T> extends StatelessWidget {
               ),
             ),
           ),
-          style: const TextStyle(
+          style: TextStyle(
             fontFamily: 'Changa',
             fontSize: 15,
             color: isDark ? Colors.white : Colors.black.withOpacity(0.08),

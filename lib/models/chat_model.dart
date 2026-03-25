@@ -1,6 +1,4 @@
-import 'package:equatable/equatable.dart';
-
-class ChatModel extends Equatable {
+class ChatModel {
   final String id;
   final String userId;
   final String otherUserId;
@@ -9,7 +7,7 @@ class ChatModel extends Equatable {
   final int unreadCount;
   final Map<String, dynamic>? otherUser;
 
-  const ChatModel({
+  ChatModel({
     required this.id,
     required this.userId,
     required this.otherUserId,
@@ -63,15 +61,4 @@ class ChatModel extends Equatable {
       otherUser: otherUser ?? this.otherUser,
     );
   }
-
-  @override
-  List<Object?> get props => [
-        id,
-        userId,
-        otherUserId,
-        lastMessage,
-        lastMessageTime,
-        unreadCount,
-        otherUser,
-      ];
 }
