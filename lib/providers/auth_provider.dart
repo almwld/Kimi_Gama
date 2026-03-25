@@ -20,7 +20,7 @@ class AuthProvider extends ChangeNotifier {
   void _loadUser() {
     final userData = LocalStorageService.getUser();
     if (userData != null) {
-      _user = UserModel.fromJson(userData);
+      _user = UserModel.fromJson(await userData);
     }
   }
 
@@ -34,7 +34,7 @@ class AuthProvider extends ChangeNotifier {
       if (response.user != null) {
         final userData = await SupabaseService.getUser(response.user!.id);
         if (userData != null) {
-          _user = UserModel.fromJson(userData);
+          _user = UserModel.fromJson(await userData);
           await LocalStorageService.saveUser(userData);
           return true;
         }

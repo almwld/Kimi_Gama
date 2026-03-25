@@ -1,41 +1,36 @@
 import 'package:flutter/material.dart';
-import '../models/order_item_model.dart';
 import '../services/local_storage_service.dart';
 
 class OrderProvider extends ChangeNotifier {
-  List<OrderItemModel> _cart = [];
-
-  List<OrderItemModel> get cart => _cart;
-  int get cartItemCount => _cart.length;
+  List<Map<String, dynamic>> _cart = [];
 
   OrderProvider() {
     _loadCart();
   }
 
-  void _loadCart() {
-    final cartData = LocalStorageService.getCart();
-    _cart = cartData.map((item) => OrderItemModel.fromJson(item)).toList();
-  }
-
-  void addToCart(OrderItemModel item) {
-    _cart.add(item);
-    LocalStorageService.addToCart(item.toJson());
+  Future<void> _loadCart() async {
+    _cart = await LocalStorageService.getCartAsync();
     notifyListeners();
   }
 
-  void removeFromCart(String productId) {
-    _cart.removeWhere((item) => item.productId == productId);
-    LocalStorageService.removeFromCart(productId);
+  List<Map<String, dynamic>> get cart => _cart;
+  int get cartCount => _cart.length;
+
+  Future<void> addToCart(Map<String, dynamic> item) async {
+    await LocalStorageService.addToCart(item);
+    _cart = await LocalStorageService.getCartAsync();
     notifyListeners();
   }
 
-  void clearCart() {
-    _cart.clear();
-    LocalStorageService.clearCart();
+  Future<void> removeFromCart(String productId) async {
+    await LocalStorageService.removeFromCart(productId);
+    _cart = await LocalStorageService.getCartAsync();
     notifyListeners();
   }
 
-  double getCartTotal() {
-    return _cart.fold(0, (sum, item) => sum + (item.price * item.quantity));
+  Future<void> clearCart() async {
+    await LocalStorageService.clearCart();
+    _cart = [];
+    notifyListeners();
   }
 }
