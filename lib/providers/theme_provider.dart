@@ -8,18 +8,23 @@ class ThemeProvider extends ChangeNotifier {
   ThemeMode get themeMode => _isDarkMode ? ThemeMode.dark : ThemeMode.light;
 
   ThemeProvider() {
-    _isDarkMode = LocalStorageService.getDarkMode();
+    _loadTheme();
   }
 
-  void toggleTheme() {
-    _isDarkMode = !_isDarkMode;
-    LocalStorageService.setDarkMode(_isDarkMode);
+  Future<void> _loadTheme() async {
+    _isDarkMode = await LocalStorageService.getDarkMode();
     notifyListeners();
   }
 
-  void setDarkMode(bool value) {
+  Future<void> toggleTheme() async {
+    _isDarkMode = !_isDarkMode;
+    await LocalStorageService.setDarkMode(_isDarkMode);
+    notifyListeners();
+  }
+
+  Future<void> setDarkMode(bool value) async {
     _isDarkMode = value;
-    LocalStorageService.setDarkMode(value);
+    await LocalStorageService.setDarkMode(value);
     notifyListeners();
   }
 }
