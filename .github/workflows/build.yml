@@ -39,19 +39,78 @@ jobs:
         
         mkdir -p assets/images assets/icons assets/fonts
         
-        # إضافة namespace
-        sed -i '/android {/a \    namespace "com.kimigama.app"' android/app/build.gradle
+        # إعادة كتابة app/build.gradle كاملاً
+        cat > android/app/build.gradle << 'APP'
+        plugins {
+            id "com.android.application"
+            id "kotlin-android"
+            id "dev.flutter.flutter-gradle-plugin"
+        }
         
-        # رفع minSdkVersion
-        sed -i 's/minSdkVersion [0-9]*/minSdkVersion 21/' android/app/build.gradle
+        def localProperties = new Properties()
+        def localPropertiesFile = rootProject.file('local.properties')
+        if (localPropertiesFile.exists()) {
+            localPropertiesFile.withReader('UTF-8') { reader ->
+                localProperties.load(reader)
+            }
+        }
+        
+        def flutterVersionCode = localProperties.getProperty('flutter.versionCode', '1')
+        def flutterVersionName = localProperties.getProperty('flutter.versionName', '1.0')
+        
+        android {
+            namespace "com.kimigama.app"
+            compileSdkVersion 34
+            ndkVersion "27.0.12077973"
+            
+            compileOptions {
+                sourceCompatibility JavaVersion.VERSION_17
+                targetCompatibility JavaVersion.VERSION_17
+                coreLibraryDesugaringEnabled true
+            }
+            
+            kotlinOptions {
+                jvmTarget = '17'
+            }
+            
+            sourceSets {
+                main.java.srcDirs += 'src/main/kotlin'
+            }
+            
+            defaultConfig {
+                applicationId "com.kimigama.app"
+                minSdkVersion 21
+                targetSdkVersion 34
+                versionCode flutterVersionCode.toInteger()
+                versionName flutterVersionName
+                multiDexEnabled true
+            }
+            
+            buildTypes {
+                release {
+                    signingConfig signingConfigs.debug
+                    minifyEnabled true
+                    shrinkResources true
+                    proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+                }
+            }
+        }
+        
+        flutter {
+            source '../..'
+        }
+        
+        dependencies {
+            implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.22"
+            implementation 'androidx.multidex:multidex:2.0.1'
+            coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
+        }
+        APP
         
         # إضافة flutterEmbedding
         sed -i '/<application>/a \        <meta-data android:name="flutterEmbedding" android:value="2" />' android/app/src/main/AndroidManifest.xml
         
-        # تحديث gradle-wrapper إلى 8.9
-        echo "distributionUrl=https\\://services.gradle.org/distributions/gradle-8.9-all.zip" > android/gradle/wrapper/gradle-wrapper.properties
-        
-        # إعداد Kotlin 1.9.22
+        # تحديث settings.gradle
         cat > android/settings.gradle << 'SETTINGS'
         pluginManagement {
             def flutterSdkPath = {
@@ -76,7 +135,10 @@ jobs:
         include ":app"
         SETTINGS
         
-        # تنظيف cache بالكامل
+        # تحديث gradle-wrapper
+        echo "distributionUrl=https\\://services.gradle.org/distributions/gradle-8.9-all.zip" > android/gradle/wrapper/gradle-wrapper.properties
+        
+        # تنظيف cache
         rm -rf ~/.gradle/caches/
         
         flutter pub get
