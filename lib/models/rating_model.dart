@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 
-part 'rating_model.g.dart';
 
 @HiveType(typeId: 10)
 class RatingModel extends HiveObject {

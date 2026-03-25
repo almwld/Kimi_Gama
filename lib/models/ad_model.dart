@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 
-part 'ad_model.g.dart';
 
 @HiveType(typeId: 11)
 class AdModel extends HiveObject {

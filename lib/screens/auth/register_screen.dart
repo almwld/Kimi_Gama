@@ -1,0 +1,6 @@
+import 'package:flutter/material.dart';
+class RegisterScreen extends StatelessWidget {
+  const RegisterScreen({super.key});
+  @override
+  Widget build(BuildContext context) => Scaffold(appBar: AppBar(title: const Text('تسجيل جديد')), body: const Center(child: Text('شاشة التسجيل')));
+}

@@ -24,16 +24,16 @@ class LocalStorageService {
     await Hive.initFlutter();
     
     // تسجيل المحولات
-    Hive.registerAdapter(UserModelAdapter());
-    Hive.registerAdapter(ProductModelAdapter());
-    Hive.registerAdapter(OrderItemModelAdapter());
-    Hive.registerAdapter(WalletModelAdapter());
-    Hive.registerAdapter(TransactionModelAdapter());
-    Hive.registerAdapter(ChatModelAdapter());
-    Hive.registerAdapter(MessageModelAdapter());
-    Hive.registerAdapter(NotificationModelAdapter());
-    Hive.registerAdapter(RatingModelAdapter());
-    Hive.registerAdapter(AdModelAdapter());
+//    Hive.registerAdapter(UserModelAdapter());
+//    Hive.registerAdapter(ProductModelAdapter());
+//    Hive.registerAdapter(OrderItemModelAdapter());
+//    Hive.registerAdapter(WalletModelAdapter());
+//    Hive.registerAdapter(TransactionModelAdapter());
+//    Hive.registerAdapter(ChatModelAdapter());
+//    Hive.registerAdapter(MessageModelAdapter());
+//    Hive.registerAdapter(NotificationModelAdapter());
+//    Hive.registerAdapter(RatingModelAdapter());
+//    Hive.registerAdapter(AdModelAdapter());
     
     // فتح الصناديق
     _userBox = await Hive.openBox<UserModel>('user');

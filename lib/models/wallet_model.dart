@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 
-part 'wallet_model.g.dart';
 
 @HiveType(typeId: 3)
 class WalletModel extends HiveObject {

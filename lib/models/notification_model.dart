@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 
-part 'notification_model.g.dart';
 
 @HiveType(typeId: 9)
 class NotificationModel extends HiveObject {

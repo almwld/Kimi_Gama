@@ -1,6 +1,5 @@
 import 'package:hive/hive.dart';
 
-part 'order_model.g.dart';
 
 @HiveType(typeId: 7)
 class OrderModel extends HiveObject {
