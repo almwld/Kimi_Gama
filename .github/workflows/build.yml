@@ -33,22 +33,27 @@ jobs:
           mkdir -p android/app/src/main/res/values
           mkdir -p android/app/src/main/res/drawable
           
+          # gradle.properties لتفعيل AndroidX
+          echo 'android.useAndroidX=true
+          android.enableJetifier=true' > android/gradle.properties
+          
+          # build.gradle (root)
           echo 'buildscript {
-            ext.kotlin_version = "1.9.0"
-            repositories {
-                google()
-                mavenCentral()
-            }
-            dependencies {
-                classpath "com.android.tools.build:gradle:7.4.2"
-                classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-            }
+              ext.kotlin_version = "1.9.0"
+              repositories {
+                  google()
+                  mavenCentral()
+              }
+              dependencies {
+                  classpath "com.android.tools.build:gradle:7.4.2"
+                  classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+              }
           }
           allprojects {
-            repositories {
-                google()
-                mavenCentral()
-            }
+              repositories {
+                  google()
+                  mavenCentral()
+              }
           }
           rootProject.buildDir = "../build"
           subprojects {
@@ -61,6 +66,7 @@ jobs:
               delete rootProject.buildDir
           }' > android/build.gradle
           
+          # app/build.gradle
           echo 'def localProperties = new Properties()
           def localPropertiesFile = rootProject.file("local.properties")
           if (localPropertiesFile.exists()) {
@@ -116,14 +122,7 @@ jobs:
               implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
           }' > android/app/build.gradle
           
-          echo 'include ":app"
-          def localPropertiesFile = new File(rootProject.projectDir, "local.properties")
-          def properties = new Properties()
-          assert localPropertiesFile.exists()
-          localPropertiesFile.withReader("UTF-8") { reader -> properties.load(reader) }
-          def flutterSdkPath = properties.getProperty("flutter.sdk")
-          assert flutterSdkPath != null, "flutter.sdk not set in local.properties"
-          apply from: "$flutterSdkPath/packages/flutter_tools/gradle/app_plugin_loader.gradle"' > android/settings.gradle
+          echo 'include ":app"' > android/settings.gradle
           
           echo 'distributionBase=GRADLE_USER_HOME
           distributionPath=wrapper/dists
@@ -161,7 +160,6 @@ jobs:
           </layer-list>' > android/app/src/main/res/drawable/launch_background.xml
           
           echo "flutter.sdk=$FLUTTER_ROOT" > android/local.properties
-          echo "flutter.buildMode=release" >> android/local.properties
       
       - name: Build APK
         run: flutter build apk --release --split-per-abi
