@@ -19,39 +19,34 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.22.0'
+        flutter-version: '3.19.0'
 
     - name: Build
       run: |
-        # حفظ الكود
         mkdir /tmp/code
         cp -r lib /tmp/code/
         cp -r assets /tmp/code/ 2>/dev/null || true
         cp pubspec.yaml /tmp/code/
         
-        # حذف android القديم
         rm -rf android ios
         
-        # إنشاء مشروع Flutter جديد مع android فقط
         flutter create --org com.kimigama --project-name kimigama --platforms android .
         
-        # استعادة الكود
         rm -rf lib assets
         cp -r /tmp/code/lib .
         cp -r /tmp/code/assets . 2>/dev/null || true
         cp /tmp/code/pubspec.yaml .
         
-        # إنشاء مجلدات assets
         mkdir -p assets/images assets/icons assets/fonts
         
-        # إضافة namespace إلى app/build.gradle
+        # خفض path_provider إلى ^2.0.0
+        sed -i 's/path_provider:.*/path_provider: ^2.0.0/' pubspec.yaml
+        
+        # إضافة namespace
         sed -i '/android {/a \    namespace "com.kimigama.app"' android/app/build.gradle
         
         # إضافة flutterEmbedding
         sed -i '/<application>/a \        <meta-data android:name="flutterEmbedding" android:value="2" />' android/app/src/main/AndroidManifest.xml
-        
-        # تحديث gradle-wrapper
-        echo "distributionUrl=https\\://services.gradle.org/distributions/gradle-8.9-all.zip" > android/gradle/wrapper/gradle-wrapper.properties
         
         # تنظيف cache
         rm -rf ~/.gradle/caches/
