@@ -19,53 +19,20 @@ class LocalStorageService {
     _cartBoxInstance = await Hive.openBox(_cartBox);
   }
 
-  // ===== المستخدم =====
-  static Future<void> saveUser(Map<String, dynamic> user) async {
-    await _userBoxInstance.put('current_user', user);
-  }
-
+  // المستخدم
   static Map<String, dynamic>? getUser() {
     return _userBoxInstance.get('current_user');
+  }
+
+  static Future<void> saveUser(Map<String, dynamic> user) async {
+    await _userBoxInstance.put('current_user', user);
   }
 
   static Future<void> deleteUser() async {
     await _userBoxInstance.delete('current_user');
   }
 
-  // ===== الإعدادات =====
-  static Future<void> setDarkMode(bool isDark) async {
-    await _settingsBoxInstance.put('dark_mode', isDark);
-  }
-
-  static bool getDarkMode() {
-    return _settingsBoxInstance.get('dark_mode') ?? false;
-  }
-
-  static Future<void> setLanguage(String lang) async {
-    await _settingsBoxInstance.put('language', lang);
-  }
-
-  static String getLanguage() {
-    return _settingsBoxInstance.get('language') ?? 'ar';
-  }
-
-  static String getTheme() {
-    return _settingsBoxInstance.get('theme') ?? 'system';
-  }
-
-  static Future<void> setTheme(String theme) async {
-    await _settingsBoxInstance.put('theme', theme);
-  }
-
-  static bool getNotificationsEnabled() {
-    return _settingsBoxInstance.get('notifications') ?? true;
-  }
-
-  static Future<void> setNotificationsEnabled(bool enabled) async {
-    await _settingsBoxInstance.put('notifications', enabled);
-  }
-
-  // ===== المفضلة =====
+  // المفضلة
   static List<String> getFavorites() {
     return _favoritesBoxInstance.get('favorites', defaultValue: <String>[]);
   }
@@ -84,11 +51,7 @@ class LocalStorageService {
     await _favoritesBoxInstance.put('favorites', favs);
   }
 
-  static bool isFavorite(String productId) {
-    return getFavorites().contains(productId);
-  }
-
-  // ===== سلة التسوق =====
+  // سلة التسوق
   static List<Map<String, dynamic>> getCart() {
     return _cartBoxInstance.get('cart', defaultValue: <Map<String, dynamic>>[]);
   }
@@ -109,12 +72,20 @@ class LocalStorageService {
     await _cartBoxInstance.delete('cart');
   }
 
-  static Future<void> updateCartItem(String productId, int quantity) async {
-    List<Map<String, dynamic>> cart = getCart();
-    final index = cart.indexWhere((item) => item['productId'] == productId);
-    if (index != -1) {
-      cart[index]['quantity'] = quantity;
-      await _cartBoxInstance.put('cart', cart);
-    }
+  // الإعدادات
+  static bool getDarkMode() {
+    return _settingsBoxInstance.get('dark_mode', defaultValue: false);
+  }
+
+  static Future<void> setDarkMode(bool isDark) async {
+    await _settingsBoxInstance.put('dark_mode', isDark);
+  }
+
+  static String getLanguage() {
+    return _settingsBoxInstance.get('language', defaultValue: 'ar');
+  }
+
+  static Future<void> setLanguage(String lang) async {
+    await _settingsBoxInstance.put('language', lang);
   }
 }
