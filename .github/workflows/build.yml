@@ -24,7 +24,7 @@ jobs:
     - name: Setup Flutter
       uses: subosito/flutter-action@v2
       with:
-        flutter-version: '3.19.0'
+        flutter-version: '3.22.0'
         channel: 'stable'
 
     - name: Clean and get dependencies
@@ -41,37 +41,41 @@ jobs:
         # تنظيف الملفات المؤقتة
         rm -rf temp_android
 
-    - name: Update Gradle config
+    - name: Fix Kotlin version to 1.9.0
       run: |
+        # تحديث إصدار Kotlin في build.gradle
+        sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = '\''1.9.0'\''/' android/build.gradle
+        # تحديث إصدار Gradle
+        cat > android/gradle/wrapper/gradle-wrapper.properties << 'WRAPPER'
+distributionBase=GRADLE_USER_HOME
+distributionPath=wrapper/dists
+zipStoreBase=GRADLE_USER_HOME
+zipStorePath=wrapper/dists
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.5-all.zip
+WRAPPER
         # تحديث إصدارات SDK
-        sed -i 's/minSdkVersion .*/minSdkVersion 21/' android/app/build.gradle
-        sed -i 's/targetSdkVersion .*/targetSdkVersion 33/' android/app/build.gradle
-        sed -i 's/compileSdkVersion .*/compileSdkVersion 33/' android/app/build.gradle
-        # تحديث إصدار Kotlin
-        sed -i 's/ext.kotlin_version = .*/ext.kotlin_version = '\''1.7.1'\''/' android/build.gradle
+        sed -i 's/compileSdk [0-9]*/compileSdk 34/' android/app/build.gradle
+        sed -i 's/targetSdk [0-9]*/targetSdk 34/' android/app/build.gradle
+        sed -i 's/minSdk [0-9]*/minSdk 21/' android/app/build.gradle
 
     - name: Build APK (split per ABI)
       run: |
         flutter build apk --release --split-per-abi
-        # إعادة تسمية الملفات لتكون أكثر وضوحاً
-        mv build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk build/app/outputs/flutter-apk/flex-yemen-armeabi-v7a.apk 2>/dev/null || true
-        mv build/app/outputs/flutter-apk/app-arm64-v8a-release.apk build/app/outputs/flutter-apk/flex-yemen-arm64-v8a.apk 2>/dev/null || true
-        mv build/app/outputs/flutter-apk/app-x86_64-release.apk build/app/outputs/flutter-apk/flex-yemen-x86_64.apk 2>/dev/null || true
 
     - name: Upload APK (ARMv7)
       uses: actions/upload-artifact@v4
       with:
         name: flex-yemen-armeabi-v7a
-        path: build/app/outputs/flutter-apk/flex-yemen-armeabi-v7a.apk
+        path: build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk
 
     - name: Upload APK (ARM64)
       uses: actions/upload-artifact@v4
       with:
         name: flex-yemen-arm64-v8a
-        path: build/app/outputs/flutter-apk/flex-yemen-arm64-v8a.apk
+        path: build/app/outputs/flutter-apk/app-arm64-v8a-release.apk
 
     - name: Upload APK (x86_64)
       uses: actions/upload-artifact@v4
       with:
         name: flex-yemen-x86_64
-        path: build/app/outputs/flutter-apk/flex-yemen-x86_64.apk
+        path: build/app/outputs/flutter-apk/app-x86_64-release.apk
